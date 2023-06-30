@@ -30,7 +30,7 @@ type planConfig struct {
 
 var defaultPlanOptions = planConfig{
 	destroy:     false,
-	color:       false,
+	color:       true,
 	lock:        true,
 	lockTimeout: "0s",
 	parallelism: 10,
