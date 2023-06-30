@@ -139,6 +139,15 @@ func DryRun(dryRun bool) *DryRunOption {
 	return &DryRunOption{dryRun}
 }
 
+type ColorOption struct {
+	color bool
+}
+
+// DryRun represents the -dry-run flag.
+func ColorRun(color bool) *ColorOption {
+	return &ColorOption{color}
+}
+
 type FSMirrorOption struct {
 	fsMirror string
 }

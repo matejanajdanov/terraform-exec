@@ -14,6 +14,7 @@ import (
 type planConfig struct {
 	destroy      bool
 	dir          string
+	color        bool
 	lock         bool
 	lockTimeout  string
 	out          string
@@ -29,6 +30,7 @@ type planConfig struct {
 
 var defaultPlanOptions = planConfig{
 	destroy:     false,
+	color:       false,
 	lock:        true,
 	lockTimeout: "0s",
 	parallelism: 10,
@@ -90,6 +92,10 @@ func (opt *LockOption) configurePlan(conf *planConfig) {
 
 func (opt *DestroyFlagOption) configurePlan(conf *planConfig) {
 	conf.destroy = opt.destroy
+}
+
+func (opt *ColorOption) configurePlan(conf *planConfig) {
+	conf.color = opt.color
 }
 
 // Plan executes `terraform plan` with the specified options and waits for it
@@ -181,7 +187,7 @@ func (tf *Terraform) planJSONCmd(ctx context.Context, opts ...PlanOption) (*exec
 }
 
 func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string, error) {
-	args := []string{"plan", "-no-color", "-input=false", "-detailed-exitcode"}
+	args := []string{"plan", "-input=false", "-detailed-exitcode"}
 
 	// string opts: only pass if set
 	if c.lockTimeout != "" {
@@ -192,6 +198,9 @@ func (tf *Terraform) buildPlanArgs(ctx context.Context, c planConfig) ([]string,
 	}
 	if c.state != "" {
 		args = append(args, "-state="+c.state)
+	}
+	if !c.color {
+		args = append(args, "-no-color")
 	}
 	for _, vf := range c.varFiles {
 		args = append(args, "-var-file="+vf)
